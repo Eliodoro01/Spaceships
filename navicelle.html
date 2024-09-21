@@ -1,0 +1,480 @@
+<html>
+
+
+<head>
+	<title>Progetto navicelle spaziali </title>
+</head>
+
+
+<body style="background-color: rgb(0 126 255 / 19%);">
+	
+			   <a href="index.html">
+			  	 <img src="images/home.png" width="50px" height="auto">
+			   </a>
+			   
+			   <h1 style= "color:red";> 1. Navicelle spaziali</h1>
+			   
+			   <p style="font-size:20px;" >   Cognome: Mascolo <br>
+									Nome: Eliodoro <br>
+									Matricola: 0124002547 <br></p> 
+			   
+			   <a target ="blank" href = "Pr_Mascolo_Eliodoro.pdf">
+			   
+			   <h2 style="font-size:32px";> Traccia:</h2>
+			   
+			   </a>
+			   
+			   <p> Si vuole sviluppare un programma per la simulazione del gioco di 4 navicelle spaziali. La mappa da gioco risulta di forma rettangolare e di dimensioni 8x7.
+					Sulla mappa è posizione un cannoncino fermo (rettangolo rosso in figura)e si muovono 3 navicelle che devono essere colpite (rettangolo giallo, blu e verde).<br>
+					
+					<img src="images/immaginetraccia1.png" width="750px" height="auto" > <br>
+					
+					<br>Le tre navicelle ad ogni passo si muovono nel seguente modo:<br>
+					• La navicella gialla ha la probabilità del 60% di muoversi di un singolo passo verso destra e il 40% di restare ferma.<br>
+					• La navicella blue ha la probabilità del 70% di muoversi di due passi verso sinistra e il 30% di muoversi di un singolo passo verso sinistra.<br>
+					• La navicella verde ha la probabilità del 40% di muoversi di tre passi verso destra, il 30% di muoversi di due passi verso destra e il 30% di muoversi di un singolo passo verso destra.<br>
+					Ad ogni passo il cannoncino rosso spara un colpo solo se al precedente passo una delle navicelle ha sostato nella zona gialla. La partita termina o quando l’utente ha distrutto le 3 navicelle o quando si raggiungono 100 passi.
+					Sviluppare un algoritmo che prevede la visualizzazione della mappa da gioco e delle posizioni delle navicelle.<br> Effettuare almeno 3 simulazioni.</p>
+			   <!--<ul type="square">
+				 <li>primo </li> 
+				 <li>secondo </li>   
+				 <li>terzo </li> 
+		          </ul>-->
+			   
+			   
+			   
+			   <!--<h3 style="font-size:32px";>Testo del programma C: </h3>-->
+			   
+			   <a target = "blank" href = "ProgettiC/Progetto_navicelle/main.c">  
+			   
+				<h3 style="font-size:32px";>Testo del programma C: </h3>   
+			   
+			   </a>
+			
+			   <p>  #include  <stdio.h><br>
+#include  <stdlib.h><br>
+#include  <time.h><br>
+
+<br>
+/*************************************** PROCEDURE ********************************************/<br>
+<br>
+void muovi_gialla(int, char [8][7], int *, int *);<br>
+<br>
+void muovi_verde(int, char [8][7], int *, int *);<br>
+<br>
+void muovi_blue(int, char [8][7], int *, int *);<br>
+<br>
+int controllo(int, int);<br>
+<br>
+void pulisci(int, char [8][7], int *, int *);<br>
+
+
+<br>
+
+/*************************************** MAIN ********************************************/<br>
+<br>
+/*  Questo programma ha come finalità, quella di simulare un gioco simile alla battaglia navale. Nel nostro caso le navi sono le invece delle navicelle spaziali<br>
+    che in base ad una percentuale pre impostata effettuano dei movimenti ed in caso si trovassero in un area specifica del campo da gioco queste verrebbero<br>
+    colpite ed eliminate dal campo da un "cannone".<br>
+*/
+<br>
+int main()<br>
+{<br>
+srand((unsigned int)time(0) );<br>
+<br>
+int i, j, G_x, G_y, B_x, B_y, V_x, V_y, random, sparato_G, sparato_V, sparato_B;<br>
+<br>
+int p = 0;<br>
+<br>
+int spara = 1;<br>
+<br>
+char campo[8][7]= <br>{{'G', '.', '.', '.', '.', '.', '.',},<br>
+                    {'.', '.', '.', 'B', '.', '.', '.'},<br>
+                    {'.', '.', '.', '.', '.', '.', 'V'},<br>
+                    {'.', '.', '.', '.','.','.','.'},<br>
+                    {'.', '.', '.', '.','.','.','.'},<br>
+                    {'.', '.', '.', '.','.','.','.'},<br>
+                    {'.', '.', '.', '.','.','.','.'},<br>
+                    {'.', '.', '.', 'R', '.', '.', '.'}};<br>
+<br>
+G_x = 0;    G_y = 0;         // Posizionamento iniziale delle navicelle secondo la traccia<br>
+B_x = 1;    B_y = 3;<br>
+V_x = 2;    V_y = 6;<br>
+
+<br>
+<br>
+for (i=0; i<8; i++)         // Stampa della matrice prima che le navicelle si muovano <br>
+    {<br>
+        for (j=0; j<7; j++) <br>
+        printf("%c ", campo[i][j]);<br>
+        printf("\n");<br>
+    }<br>
+<br>
+p = 0; //passi<br>
+<br>
+do {<br>
+<br>
+p++;<br>
+<br>
+if (sparato_V!=1)           //Se la navicella verde non è stata colpita allora muoverla<br>
+    {<br>
+    random = rand()%10;                                                 // Genera randomicamente un numero che va da 0 a 9 che viene usato nella funzione per far muovere la navicella in un certo modo<br>
+    muovi_verde(random, campo, &V_x, &V_y);                             // Richiamo della funzione per muovere la navicella verde<br>
+    printf("\tRandom V: %d \t Coordinate: %d \t %d \n", random, V_x, V_y);      // Stampa il numero generato random e le nuove coordinate<br>
+    }<br>
+<br>
+else<br>
+    {<br>
+    printf("\nLa verde e' stata colpita\n");                              // Se la vanicella è stata colpita stampa<br>
+    }<br>
+<br>
+if (sparato_B!=1)           //Se la navicella blue non è stata colpita allora muoverla<br>
+    {<br>
+    random= rand()%10;                                                  // Genera randomicamente un numero che va da 0 a 9 che viene usato nella funzione per far muovere la navicella in un certo modo<br>
+    muovi_blu(random, campo, &B_x, &B_y);                              // Richiamo della funzione per muovere la navicella blu<br>
+    printf("\n\tRandom B: %d \t Coordinate: %d \t %d \n", random, B_x, B_y);    // Stampa il numero generato random e le nuove coordinate<br>
+    }<br>
+<br>
+else<br>
+    {<br>
+    printf("\nLa blu e' stata colpita\n");                             // Se la vanicella è stata colpita stampa<br>
+    }<br>
+<br>
+if (sparato_G!=1)           //Se la navicella gialla non è stata colpita allora muoverla<br>
+    {<br>
+    random= rand()%10;                                                  // Genera randomicamente un numero che va da 0 a 9 che viene usato nella funzione per far muovere la navicella in un certo modo<br>
+    muovi_gialla(random, campo, &G_x, &G_y);                            // Richiamo della funzione per muovere la navicella gialla<br>
+    printf("\n\tRandom G: %d \t Coordinate: %d \t %d \n", random, G_x, G_y);    // Stampa il numero generato random e le nuove coordinate<br>
+    }<br>
+<br>
+else<br>
+    {<br>
+    printf("\nLa gialla e' stata colpita\n");                           // Se la vanicella è stata colpita stampa<br>
+    }<br>
+<br>
+printf("\n");<br>
+
+<br>
+for (i=0; i<8; i++)      //STAMPA LA MATRICE AGGIORNATA<br>
+        {<br>
+        for (j=0; j<7; j++)<br>
+        printf("%c ", campo[i][j]);<br>
+        printf("\n");<br>
+        }<br>
+<br>
+for (i=0; i<3; i++)     // Ad ogni attivazione stampo il passo e le coordinate<br>
+    {<br>
+    printf("\n");<br>
+    printf("\n\n");<br>
+    printf("\n\t\t\t passo = %d\n", p);<br>
+    printf("\t V= %d %d ", V_x, V_y);<br>
+<br>
+    if (sparato_V==1)   // Visualizza la stringa "Colpita" se il valore "Sparato" (che viene dato in output dalla funzione "controllo") è uguale ad 1<br>
+        {<br>
+        printf(" Colpita");<br>
+        }<br>
+<br>
+    printf("\n\t B= %d %d ", B_x, B_y);<br>
+<br>
+    if (sparato_B==1)<br>
+        {<br>
+        printf(" Colpita");<br>
+        }<br>
+<br>
+    printf("\n\t G= %d %d ", G_x, G_y);<br>
+<br>
+    if (sparato_G==1)<br>
+        {<br>
+        printf(" Colpita");<br>
+        }<br>
+<br>
+    printf("\n");<br>
+<br>
+    if (sparato_V!=1)    // Se "sparato" è diverso da 1 richiamo la funzione controllo per controllare se la navicella viene colpita<br>
+        {<br>
+        sparato_V= controllo(spara, V_y);<br>
+        }<br>
+<br>
+    if (sparato_B!=1)<br>
+        {<br>
+        sparato_B= controllo(spara, B_y);<br>
+        }<br>
+<br>
+    if (sparato_G!=1)<br>
+        {<br>
+        sparato_G= controllo(spara, G_y);<br>
+        }<br>
+
+<br>
+    pulisci(sparato_V, campo, &V_x, &V_y);      // Viene chiamata la funzione "pulisci" e se una navicella è stata colpita la elimina dalla matrice<br>
+    pulisci(sparato_B, campo, &B_x, &B_y);<br>
+    pulisci(sparato_G, campo, &G_x, &G_y <br>
+<br>
+    }<br>
+}<br>
+    while (((sparato_G!=1) || (sparato_V!=1) || (sparato_B!=1)) && (p < 100)); // Esegue il ciclo finchè tutte e tre le navicelle non sono state distrutte oppure il contatore passi è arrivato a 100<br>
+<br>
+    printf("\n\n\n\t Fine partita\n\n\n");<br>
+<br>
+    system("PAUSE");<br>
+<br>
+    return 0;<br>
+}<br>
+
+
+<br>
+
+/*************************************** FUNZIONI ********************************************/<br>
+
+
+<br>
+
+/* Il valore random: è  il numero generato nel main mentre x, y sono coordinate delle navicelle ed<br>
+    y è l'unica che cambia con il passare dei turni, siccome, le navicelle si muovono solo verso destra e verso sinistra (che sono le colonne)*/<br>
+<br>
+/* Questa function con il semplice uso di if ed else, in base al numero generato randomicamente, muove la navicella gialla.<br>
+   In input viene data alla function il numero generato randomicamente, il campo di gioco e le coordinate correnti della navicella<br>
+   e restituisce in output la nuova posizione della navicella sul campo di gioco. */<br>
+void muovi_gialla(int random, char campo[8][7], int *G_x, int *G_y)<br>
+{<br>
+    campo[*G_x][*G_y]='.';              // Il campo all'inizio viene pulito<br>
+<br>
+        if (random<6)<br>
+        {<br>
+            if (*G_y==6)                // Si fa attenzione a quando la navicella raggiunge il bordo<br>
+                *G_y=0;<br>
+<br>
+            else                        // Incrementa la posizione di un passo verso destra<br>
+                *G_y = *G_y + 1;<br>
+        }<br>
+<br>
+    campo[*G_x][*G_y]='G';              // Il campo alla fine viene aggiornato con le nuove coordinate<br>
+}//Fine function<br>
+
+<br>
+
+/*Questa function con il semplice uso di if ed else, in base al numero generato randomicamente, muove la navicella verde.<br>
+   In input viene data alla function il numero generato randomicamente, il campo di gioco e le coordinate correnti della navicella<br>
+   e restituisce in output la nuova posizione della navicella sul campo di gioco. */<br>
+void muovi_verde(int random, char campo[8][7], int *V_x, int *V_y)<br>
+{<br>
+    campo[*V_x][*V_y]='.';          // Il campo all'inizio viene pulito<br>
+<br>
+        if(random<4) <br> 
+        {<br>
+            if (*V_y==6)            // Si fa attenzione a quando la navicella raggiunge il bordo<br>
+                *V_y=2;<br>
+<br>
+            else if (*V_y==5)       // Si fa attenzione a quando la navicella raggiunge il bordo<br>
+                    *V_y=1;<br>
+<br>
+            else if (*V_y==4)       // Si fa attenzione a quando la navicella raggiunge il bordo<br>
+                    *V_y=0;<br>
+<br>
+            else                    // Incrementa la posizione di tre passi verso destra<br>
+                *V_y=*V_y+3;<br>
+        }<br>
+<br>
+        else if (random>=4 && random <=6)<br>
+            {<br>
+                if (*V_y==6)        // Si fa attenzione a quando la navicella raggiunge il bordo<br>
+                    *V_y=1;<br>
+<br>
+                else if (*V_y==5)   // Si fa attenzione a quando la navicella raggiunge il bordo<br>
+                        *V_y=0;<br>
+<br>
+                else                // Incrementa la posizione di due verso destra<br>
+                    *V_y=*V_y+2;<br>
+            }<br>
+<br>
+        else if (random >=7)<br>
+            {<br>
+                if (*V_y==6)        // Si fa attenzione a quando la navicella raggiunge il bordo<br>
+                    *V_y=0;<br>
+					
+                else                // Incrementa la posizione di un passo verso destra<br>
+                    *V_y=*V_y+1;<br>
+            }<br>
+<br>
+     campo[*V_x][*V_y]='V';         // Il campo alla fine viene aggiornato con le nuove coordinate<br>
+}//Fine function<br>
+
+<br>
+
+/*Questa function con il semplice uso di if ed else, in base al numero generato randomicamente, muove la navicella blu.<br>
+   In input viene data alla function il numero generato randomicamente, il campo di gioco e le coordinate correnti della navicella<br>
+   e restituisce in output la nuova posizione della navicella sul campo di gioco. */<br>
+void muovi_blu (int random, char campo[8][7], int *B_x, int *B_y)<br>
+{<br>
+    campo[*B_x][*B_y]='.';          // Il campo all'inizio viene pulito<br>
+<br>
+        if (random<7)<br>
+        {<br>
+
+                if (*B_y==1)        // Si fa attenzione a quando la navicella raggiunge il bordo<br>
+                    *B_y=6;<br>
+
+            else if (*B_y==0)       // Si fa attenzione a quando la navicella raggiunge il bordo<br>
+                    *B_y=5;<br>
+                else                // Decrementa la posizione di due passi verso sinistra<br>
+                    *B_y=*B_y-2;<br>
+        }<br>
+<br>
+    else if (random>=7)<br>
+        {<br>
+            if (*B_y==0)            // Si fa attenzione a quando la navicella raggiunge il bordo<br>
+                *B_y=6;<br>
+            else                    // decrementa la posizione di un passo verso sinistra<br>
+                *B_y=*B_y-1;<br>
+        }<br>
+<br>
+    campo[*B_x][*B_y]='B';          // Il campo alla fine viene aggiornato con le nuove coordinate<br>
+   }//Fine function<br>
+<br>
+
+/* Questa function ha il compito di controllare se una delle navicelle si trova nel quadrato dove le navicelle vengono colpite.<br>
+    Tramite l'uso di if ed else se la navicella ha come coordinata y proprio un valore che corrisponde a quello del quadrato questa viene "sparata".<br>
+    Riceve in input il valore intero spara (1) e l'intero y che sarebbe la coordinata, mentre da in output il valore di "sparato" quindi 0 oppure 1.*/<br>
+int controllo(int spara, int y)<br>
+{<br>
+    int sparato;<br>
+<br>
+        if ((spara==1)&&((y==3)||(y == 2) || (y == 4))) //Se la y equivale a 2, 3, 4 la variabile "sparato" resta ad 1 e quindi la navicella viene colpita<br>
+            {<br>
+            sparato=1;<br>
+            }<br>
+<br>
+        else                                            //Se la y ha qualsiasi altro valore "sparato" va a 0 e quindi la navicella non è stata colpita<br>
+            {<br>
+            sparato=0;<br>
+            }<br>
+<br>
+return sparato;<br>
+}//Fine function<br>
+
+<br>
+/* Questa ha il compito di rimuovere la navicella colpita dalla matrice.<br>
+   In input riceve il valore di "sparato", il campo da gioco e le coordinate x e y.*/<br>
+<br>
+void pulisci(int sparato, char campo[8][7], int *x, int *y)<br>
+{<br>
+
+    if (sparato == 1)<br>
+
+        campo[*x][*y] = '.';   /* Se il valore di sparato equivale ad 1 significa che la navicella è stata colpita e quindi alle coordinate nelle quali<br>
+                                  si trovava quest'ultima viene messo il carattere punto per eliminare la navicella*/<br>
+}//Fine function<br>
+
+</p>
+			   
+			   
+			   
+			   
+			   
+			   
+			   
+		<h4 style="font-size:32px";>Simulazioni codice: </h4><br>	   
+			   
+			   
+			   
+			   <p style="font-size:22px";>1)In questa simulazione si vede che, come prima operazione, viene stampato il campo da gioco e le navicelle nelle loro posizioni iniziali, successivamente vengono generati, randomicamente, dei numeri per ognuna delle navicelle.<br>
+											In base al numero generato vengono stampate le nuove coordinate e le navicelle vengono spostate in quelle determinate posizioni, visualizzando graficamente il tutto.<br>
+											Vediamo che ad ogni passo il programma stampa le coordinate e se le navicelle sono state colpite o meno. In questo caso la partita finisce perchè tutte e tre le navicelle sono state colpite in due "passi".</p>
+			   
+		  	 <table style="border-color:#00467e;"  border="0">
+			 
+			 
+		  		 <tr> 
+		  		   <td>
+		  			   <a href="navicelle.html">
+		  			  	 <img src="images/print screen/Screenprimasim1navicelle.png" width="100%" height="auto" >
+		  			   </a>
+		  		   </td>
+		    
+		    
+		  		    <td>
+		  			    <a href="navicelle.html">
+		  			    <img src="images/print screen/Screenprimasim2navicelle.png" width="100%" height="auto" >
+		  		    	    </a>
+		  		    </td>
+				    
+		  		 </tr>
+				</table>
+				
+				
+				
+				
+				
+				<p style="font-size:22px";>2)Nella seconda simulazione vediamo che, nei primi due passi, vengono eliminate la navicella verde e la navicella gialla.<br>
+											La navicella blu continua a spostarsi per altri due passi, fino a quando non viene eliminata al quarto passo e così, colpite le tre navicelle, il programma si arresta.</p>
+				
+				<table style="border-color:#00467e;"  border="0"> 
+				
+				<tr>
+		  		   <td>
+		  			   <a href="navicelle.html">
+		  			  	 <img src="images/print screen/Screensecondasim1navicelle.png" width="100%" height="auto" >
+		  			   </a>
+		  		   </td>
+		    
+		    
+		  		    <td>
+		  			    <a href="navicelle.html">
+		  			    <img src="images/print screen/Screensecondasim2navicelle.png" width="100%" height="auto" >
+		  		    	    </a>
+		  		    </td>
+					
+					<td>
+		  			    <a href="navicelle.html">
+		  			    <img src="images/print screen/Screensecondasim3navicelle.png" width="100%" height="auto" >
+		  		    	    </a>
+		  		    </td>
+				    
+		  		 </tr>
+			    </table>
+				
+				
+				
+				
+				<p style="font-size:22px";>3)Nell'ultima simulazione, la più lunga, vediamo che in base ai numeri generati le navicelle riescono a non essere eliminate per più tempo: tuttavia, dopo 5 passi vengono colpite ed eliminate. 
+											La causa è riconducibile al fatto che l'area nella quale le navicelle vengono colpite copre la metà del campo giocabile, lasciando poche probabilità di salvezza alle navicelle.</p>
+				
+				<table style="border-color:#00467e;"  border="0"> 
+				
+				<tr>
+		  		   <td>
+		  			   <a href="navicelle.html">
+		  			  	 <img src="images/print screen/Screenterzasim1navicelle.png" width="100%" height="auto" >
+		  			   </a>
+		  		   </td>
+		    
+		    
+		  		    <td>
+		  			    <a href="navicelle.html">
+		  			    <img src="images/print screen/Screenterzasim2navicelle.png" width="100%" height="auto" >
+		  		    	    </a>
+		  		    </td>
+					
+					<td>
+		  			    <a href="navicelle.html">
+		  			    <img src="images/print screen/Screenterzasim3navicelle.png" width="100%" height="auto" >
+		  		    	    </a>
+		  		    </td>
+				    
+					<td>
+		  			    <a href="navicelle.html">
+		  			    <img src="images/print screen/Screenterzasim4navicelle.png" width="100%" height="auto" >
+		  		    	    </a>
+		  		    </td>
+		  		 </tr>
+			    </table>
+				
+				
+				
+				
+				
+				
+				
+				
+</body>
+</html>

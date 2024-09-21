@@ -1,0 +1,364 @@
+<html>
+
+
+<head>
+	<title>Progetto Corso universitario </title>
+</head>
+
+	<body style="background-color: rgb(0 126 255 / 19%);">
+	
+		<a href="index.html">
+			<img src="images/home.png" width="50px" height="auto">
+		</a>	
+		
+		<h1 style= "color:red";> 2. Corso universitario</h1>
+		
+		<p style="font-size:20px;" >   Cognome: Mascolo <br>
+									Nome: Eliodoro <br>
+									Matricola: 0124002547 <br></p> 
+									
+			<a target = "blank" href = "Pr_Mascolo_Eliodoro.pdf">
+			   
+			   <h2 style="font-size:32px";> Traccia:</h2>
+			   
+			</a>
+		<p>  Consideriamo un corso composto da 10 studenti. Ogni studente è identificato da un cognome, nome, matricola, data di nascita, luogo di nascita e indirizzo di residenza (strada/piazza, C.A.P. e numero civico ). <br>
+			Il corso dura in totale 20 giorni e le presenze vengono prese giornalmente.<br>
+			Scrivere un algoritmo che per mette di gestire le presenze degli studenti.<br>
+			Inoltre l’utente può scegliere di effettuare le seguenti operazioni<br>
+			• Dato un nome e un cognome stampare i dati e le assenze totali dello studente.<br>
+			• Stampare il nome e il cognome dello studente che ha fatto più assenze (per il calcolo del massimo usare la programmazione ricorsiva con algoritmo divide et impera).<br>
+			Effettuare almeno un test per ognuna delle opzioni richieste dall’utente.<br></p>
+
+		<a target = "blank" href = "ProgettiC/Corso_universitario/main.c">  
+			   
+				<h3 style="font-size:32px";>Testo del programma C: </h3>   
+			   
+			   </a>
+
+		<p> #include <stdio.h><br>
+#include <stdlib.h><br>
+#include <string.h><br>
+#define lungh_elenco 10<br>
+<br>
+
+/*************************************** STRUCT ********************************************/<br>
+<br>
+struct data<br>
+{<br>
+int giorno;<br>
+char *mese;<br>
+int anno;<br>
+};<br>
+
+<br>
+struct indirizzo<br>
+{<br>
+int cap;<br>
+int n_civico;<br>
+char *strada;<br>
+};<br>
+
+<br>
+struct studente<br>
+{<br>
+char *nome;<br>
+char *cognome;<br>
+int matricola;<br>
+int assenze;<br>
+char *luogo_nascita;<br>
+struct data data_nascita;<br>
+struct indirizzo dati_ind;&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp//Per memorizzare le informazioni di ogni studente<br>
+}elenco[lungh_elenco]={&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp//Viene utilizzato un array di struct<br>
+{"Eliodoro","Mascolo",12402547,0,"Castellammare Di Stabia",13,"Novembre",2001,80058,1,"Via Andolfi"},<br>
+{"Lorenzo","Ammendola",10138643,0,"Napoli",19,"Maggio",2000,80145,3,"Via Roma"},<br>
+{"Salvatore","Gallo",12918375,0,"Milano",21,"Marzo",2001,20122,15,"Via Roma"},<br>
+{"Giuseppe","Buonocore",17610182,0,"Roma",6,"Novembre",2001,00100,27,"Via Condotti"},<br>
+{"Vincenzo","Somma",12261494,0,"Pollena Trocchia",10,"Luglio",1999,80040,5,"Via Roma"},<br>
+{"Ugo","Coppola",13717442,0,"Milano",20,"Giugno",1967,20122,3,"Via Palazzo"},<br>
+{"Francesco","Cimmino",13026644,0,"Napoli",17,"Maggio",2002,80145,11,"Via Chiaia"},<br>
+{"Alessandro","Cesarano",14163033,0,"Bacoli",6,"Febbraio",2002,80070,19,"Via Catullo"},<br>
+{"FrancescaMaria","Luisi",11767696,0,"Napoli",2,"Agosto",2002,80145,31,"Via Montesanto"},<br>
+{"Francesco","Dantuono",12710908,0,"Napoli",30,"Settembre",2001,80145,15,"Via Salvatore Tommasi"},<br>
+};
+
+<br><br>
+
+/*************************************** PROCEDURE ********************************************/<br>
+
+<br>
+// Procedure delle Funzioni<br>
+<br>
+void assenze_corso(struct studente *);<br>
+<br>
+void visualizza(struct studente *);<br>
+<br>
+int ricerca_stud(struct studente *, char *,char *);<br>
+<br>
+int max_assenze(struct studente *,int );<br>
+<br>
+int max_I(int ,int );<br>
+
+
+<br>
+/*************************************** MAIN ********************************************/<br>
+<br>
+
+/*  La finalità di questo programma è quella di gestire i dati degli studenti di un corso universitario della durata<br>
+    di 20 giorni ed, in base alle nostre richieste, visualizzare lo studente con più assenze oppure cercare tramite
+    nome e cognome un determinato studente e, se resente nell'elenco, visualizzare le sue informazioni.
+*/<br>
+<br>
+
+void main()<br>
+{<br>
+// Dichiaro le variabili che verranno utilizzate nel main<br>
+<br>
+int scelta;&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp//Scelta dell'utente<br>
+int i;&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp //Variabile contatore del for<br>
+int i_trov;&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp//Variabile usata per la chiamata alla funzione della ricerca dello studente<br>
+int i_max;&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp//Variabile contenente l'indice dello studente con più assenze<br>
+int scelta_while;&nbsp&nbsp&nbsp&nbsp&nbsp//Variabile che conterrà la scelta dell'utente di rieseguire o meno il programma<br>
+int n = lungh_elenco;&nbsp&nbsp&nbsp&nbsp&nbsp//Variabile della lunghezza dell'array di struct dichiarata con il define<br>
+char cognome[20],nome[20];&nbsp&nbsp//Stringhe contenti il cognome ed il nome inseriti dall'utente<br>
+
+
+<br>
+
+<br>
+printf("\n\t\tMenu per la gestione delle informazioni degli studenti di un corso universitario\n\n\n");<br>
+<br>
+assenze_corso(elenco);      //Chiamata della funzione per la gestione delle assenze<br>
+
+<br>
+do<br>
+{<br>
+//Menù visualizzato sul terminale<br>
+printf("\nElenco operazione effettuabili :");<br>
+printf("\n\nOperazione numero 1: Inserisci un nome e un cognome per visualizzare i dati e le assenze totali dello studente;\n\n"); <br>
+printf("\n\nOperazione numero 2: Stampa il nome e il cognome dello studente che ha fatto piu assenze durante il corso universitario;\n\n");<br>
+<br>
+//Scelta dell'operazione<br>
+printf("\nScegliere l' operazione che si vuole effetture\t ");<br>
+scanf("%d",&scelta);<br>
+
+<br>
+//Esecuzione dell'operazione scelta<br>
+switch(scelta)<br>
+{<br>
+<br>
+case 1:<br>
+//Visualizza le informazioni e le assenze dello studente cercato<br>
+{<br>
+//Richiesta del nome e del cognome dello studente<br>
+printf("\nInserisci il cognome da ricercare dello studente\n");<br>
+<br>
+scanf("%s", &cognome);<br>
+<br>
+printf("\nInserisci il nome da ricercare dello studente\n");<br>
+scanf("%s", &nome);<br>
+<br>
+i_trov=ricerca_studente(elenco,cognome,nome);//Chiamata alla funzione che cerca lo studente<br>
+
+<br>
+if (i_trov==-1)<br>
+//Se lo studente non è stato trovato la funzione ritorna -1 e viene stampato il messaggio "Lo studente non e' presente nell' elenco"<br>
+printf("\nLo studente non e' presente nell' elenco\n");<br>
+else<br>
+{<br>
+//Se lo studente è presente nell'elenco stampa le informazioni e le assenze<br>
+printf("\nDati dello studente:\n\n");               // stampo la persona in base all'indice che ritorna la funzione<br>
+printf("%s %s\nMatricola N.%d\nNumero di assenze:%d",elenco[i_trov].nome, elenco[i_trov].cognome,elenco[i_trov].matricola,elenco[i_trov].assenze);<br>
+printf("\nNato a %s il giorno %d %s %d",elenco[i_trov].luogo_nascita, elenco[i_trov].data_nascita.giorno,elenco[i_trov].data_nascita.mese,elenco[i_trov].data_nascita.anno);<br>
+printf("\nResidente in %s %d, CAP: %d\n\n",elenco[i_trov].dati_ind.strada, elenco[i_trov].dati_ind.n_civico,elenco[i_trov].dati_ind.cap);<br>
+printf("\n");<br>
+}<br>
+};break;<br>
+<br>
+case 2:<br>
+//Se l'utente digita 2 lo switch eseguirà la funzione "max_assenze" e restituirà in output lo studente con più assenze<br>
+{<br>
+i_max=max_assenze(elenco,n);<br>
+<br>
+for (i=0;i<lungh_elenco;i++)    //Ciclo for che stampa le informazioni dello studente con più assenze <br>
+<br>
+if( i_max==elenco[i].assenze)   //Controllo se il valore massimo delle assenze è uguale all'indice i-esimo<br>
+{<br>
+//SE E' UGUALE, ALLORA STAMPA DEI DATI DELLO STUDENTE CHE HA EFFETTUATO PIU ASSENZE.<br>
+printf("\nDati dello studente che ha effattuato piu assenze:\n");<br>
+printf("%s %s\nMatricola:%d\nNumero di assenze:%d",elenco[i].nome,elenco[i].cognome,elenco[i].matricola,elenco[i].assenze);<br>
+printf("\nNato a %s il giorno %d %s %d",elenco[i].luogo_nascita,elenco[i].data_nascita.giorno,elenco[i].data_nascita.mese,elenco[i].data_nascita.anno);<br>
+printf("\nResidente in %s %d, CAP: %d\n\n",elenco[i].dati_ind.strada,elenco[i].dati_ind.n_civico,elenco[i].dati_ind.cap);<br>
+printf("\n");<br>
+}<br>
+};break;<br>
+<br>
+default:<br>
+    printf("\n Opzione non presente nel Menu\n");<br>
+<br>
+}//Fine dello switch<br>
+
+printf("\n\t\t\t\tPer Rieseguire il programma digitare 1\n\n \t\t\t\tPer Uscire digitare 0\n\n\t\t\t\t ");<br>
+scanf("%d",&scelta_while);<br>
+
+<br>
+}<br>
+<br>
+//Ciclo che si ripete fino a quando non si digita 0 e quindi si sceglie di uscire<br>
+while(scelta_while!=0); //Fine do-while<br>
+<br>
+}//Fine Main<br>
+
+<br>
+
+/*************************************** FUNZIONI ********************************************/<br>
+<br>
+
+
+/*Questa function assegna casualmente le assenze grazie alla function C Rand che genera due valori:<br>
+0 e 1 inserendo il modulo %2, che vengono sommate al relativo studente giorno per giorno.<br>
+Il for esterno scorre i giorni mentre quello interno assegna 0 oppure 1 studente per studente.<br>
+A questa function viene passato l'array di strutture e in output non restiuisce nessun valore,<br>
+ma va a modificare, per indirizzo,il campo assenze di ogni array di strutture. */<br><br>
+void assenze_corso (struct studente *elenco)<br>
+{<br>
+int i,j;<br>
+int assenza_casuale;<br>
+int seed;<br>
+
+<br>
+//Inserimento del seme che verrà utilizzato per generare numeri pseudo-casuali<br>
+printf("\nInserire il seme per simulare le assenze durante il corso \t ");<br>
+scanf("%d",&seed);<br>
+srand(seed);<br>
+<br>
+for(i=0;i<20;i++) //Ciclo for esterno della durata del corso<br>
+
+for(j=0;j<lungh_elenco;j++) //Ciclo for interno che scorre tutti gli studenti ogni giorno e gli assegna i valori delle assenze<br>
+{<br>
+assenza_casuale=rand()%2;   //Rand ci restituirà i valori 0 o 1<br>
+elenco[j].assenze=(elenco[j].assenze+assenza_casuale); //Assegnazione valore casuale ad ogni studente<br>
+<br>
+}<br>
+
+}//Fine function<br>
+<br>
+
+
+
+/*Questa function usa la ricerca sequenziale con approccio iterativo per la ricerca di uno studente,<br>
+le vengono passate la struttura e le due chiavi(cognome e nome),e ritorna<br>
+un valore intero che corrisponde all'indice dello studente se è stato trovato.<br>
+Se non è stato trovato alcuno studente che corrisponda con i dati immessi da input<br>
+allora ritornerà il valore -1.*/<br>
+<br>
+// Io ho ipotizzato che la ricerca studente mi ritorni una sola persona non prendo in considerazione omonimi<br>
+int ricerca_studente(struct studente *elenco, char *cognome, char *nome)<br>
+{<br>
+int i=0;<br>
+int ind_trovato=-1;<br>
+do{<br>
+    if(strcmp(elenco[i].cognome,cognome)==0) //Compara il cognome inserito all' i-esimo elemento dell' array con il cognome dato in input<br>
+
+<br>
+    if(strcmp(elenco[i].nome,nome)==0) //Compara il nome inserito all' i-esimo elemento dell' array con il nome dato in input<br>
+    ind_trovato=i;                        //Se entrambi gli if sono veri allora l'indice_trovato è proprio i-esimo elemento che si sta comparando<br>
+i++;<br>
+}<br>
+while(ind_trovato<-1||i<lungh_elenco);    //Il ciclo si ripete fino a quando indice_trovato è minore di -1 oppure i è minore della lunghezza dell'elenco(10)<br>
+<br>
+return ind_trovato;                        //Ritorna il valore dell'indice trovato<br>
+}//Fine function<br>
+
+<br>
+
+/*Questa function calcola il massimo valore delle assenze dell'array di strutture.<br>
+Per questa function è stata utilizzata la tecnica della programmazione ricorsiva.<br>
+Viene passato l'array di strutture e il size dell'array di struttura e ritorna il valore massimo di assenze effettuate dagli studenti.*/<br>
+int max_assenze(struct studente *elenco,int n)<br>
+{<br>
+int med;                            //Valore mediano dell'array<br>
+<br>
+if(n==1)                            //Caso banale, se n è uguale ad 1 abbiamo trovato il nostro obiettivo<br>
+{<br>
+return elenco[0].assenze;           //Ritorna l'elemento di indice 0 (il primo elemento) dell'array di struct<br>
+}<br>
+else                                //Se n è diverso da 1<br>
+{<br>
+med=(n-1)/2;                        //Calcolo del mediano<br>
+<br>
+return max_I(max_assenze(elenco,med+1),max_assenze(elenco+med+1,n-med-1)); /*richiamo un'altra funzione che mi dice chi è il massimo tra due numeri interi a cui passo proprio<br>
+                                                                            questa funzione così che l'array verrà diviso, fino a quando non si presenterà il caso banale (n == 1) dove si troverà l'elemeno più grande*/<br>
+}<br>
+}//Fine function<br>
+<br>
+/*Questa function calcola il massimo tra due numeri interi, come input ha due interi e ritorna il numero maggiore tra i due.*/<br>
+int max_I(int a,int b)<br>
+{<br>
+if (a<b) <br>
+return b;   //Se a è minore di b ritorna b<br>
+else<br>
+return a;   //Altrimenti ritorna a<br>
+<br>
+}<br>
+</p>
+
+				<h4 style="font-size:30px";>Simulazioni codice: </h4><br>	
+				
+				
+				
+				<p style="font-size:22px";> 1)Nella simulazione vediamo come, come prima operazione, viene stampato un messaggio che ci indica gli usi del programma, la gestione delle informazioni degli studenti iscritti ad un corso universitario.<br>
+											Successivamente, viene chiesto di inserire un seme in base al quale verranno generati casualmente il numero di assenze degli studenti.<br>
+											Il programma continua mostrando l'elenco delle operazioni effettuabili dall'utente.
+											In base al numero digitato (1 o 2) il codice eseguirà una determinata azione.<br>
+											In questa prima simulazione, viene scelta come prima operazione quella di ricerca di un determinato studente, e vediamo che, digitando cognome e nome ci verranno mostrate tutte le informazioni di un determinato
+											studente, se lo studente non è presente nell'elenco viene visualizzato il messaggio "Lo studente non è presente nell'elenco". </p>
+				
+				<table style="border-color:#00467e;"  border="0"> 
+				
+				<tr>
+		  		   <td>
+		  			   <a href="corsouniversitario.html">
+		  			  	 <img src="images/print screen/Screenprimasim1elenco.png" width="100%" height="auto" >
+		  			   </a>
+					</td>
+
+					<td>
+					   <a href="corsouniversitario.html">
+		  			  	 <img src="images/print screen/Screenprimasim2elenco.png" width="100%" height="auto" >
+		  			   </a>
+		  		   </td>
+				</table>
+		    
+			
+			
+				<p style="font-size:22px";> 2)Nella seconda simulazione vediamo eseguita la seconda opzione, cioè quella di visualizzare le informazioni dello studente con il maggior numero di assenze.<br>
+											Digitando "2" nel menù vediamo che con il seme "3" lo studente con il maggior numero di assenze è Francesco Cimmino.</p>
+			
+				<table style="border-color:#00467e;"  border="0"> 
+		  		    <td>
+		  			    <a href="corsouniversitario.html">
+		  			    <img src="images/print screen/Screensecondasim1elenco.png" width="100%" height="auto" >
+		  		    	    </a>
+		  		    </td>
+				</table>
+
+
+				<p style="font-size:22px";> 3)In questo ultimo screen vediamo l'applicazione di tutte due le opzioni presenti nel programma.<br>
+											Eseguita la prima opzione possiamo scegliere di riavviare il programma per fare una seconda scelta.<br>
+											Terminata la prima esecuzione digitiamo "1" per far rieseguire il codice e scegliere un'altra opzione, così facendo 
+											scegliamo la seconda opzione e vediamo entrambi i comandi eseguiti nella medesima simulazione.</p>
+
+				<table style="border-color:#00467e;"  border="0"> 
+					<td>
+		  			    <a href="corsouniversitario.html">
+		  			    <img src="images/print screen/Screenterzasim1elenco.png" width="100%" height="auto" >
+		  		    	    </a>
+		  		    </td>
+				</table>
+				
+		  		 </tr>
+			    </table>
+
+</body>
+</html>
